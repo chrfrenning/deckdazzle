@@ -4,4 +4,8 @@ apikeys.py
 *.html
 template.*
 presentations/
+<<<<<<< HEAD
 __pycache__/
+=======
+__pycache__/
+>>>>>>> 1c9e910a502364083d8fbff14b157158ce94f509
