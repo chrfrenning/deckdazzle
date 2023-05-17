@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, send_file
+from flask import Flask, jsonify, request, abort, send_file, render_template
 
 import os
 import json
@@ -9,8 +9,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
+@app.route("/api")
+def api():
     json = {
         "application": "DeckDazzle/1.0",
         "version": "1.0",
@@ -62,10 +62,27 @@ def create_presentation():
 def list_presentations():
     # list all files in the presentations directory
     files = os.listdir("presentations")
+    files = [f for f in files if f.endswith(".json") or f.endswith(".pending")]
     # remove the file extension
     files = [f.split(".")[0] for f in files]
     # return unique list of files
     presos = [{ "metadata" : f"/presentations/{u}", "source_url": f"/presentations/{u}/download" } for u in list(set(files))]
+    # set status of each preso
+    for p in presos:
+        print(f"{p['metadata']}.json")
+        if os.path.exists(f".{p['metadata']}.json"):
+            p['status'] = "done"
+            with open(f".{p['metadata']}.json") as fh:
+                metadata = json.load(fh)
+                p['title'] = metadata["title"]
+                p['q'] = metadata["q"]
+        else:
+            with open(f".{p['metadata']}.pending") as fh:
+                metadata = json.load(fh)
+                p['q'] = metadata["prompt"]
+                p['title'] = "TBD"
+            p['status'] = "pending"
+        
     return jsonify(presos)
 
 @app.route("/presentations/<request_id>", methods=["GET"])
@@ -98,6 +115,10 @@ def download_presentation(request_id):
         abort(404, "Presentation not found.")
     # send content of filename in result
     return send_file(filename, as_attachment=True)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 if __name__ == "__main__":
     # make sub directory for presentations

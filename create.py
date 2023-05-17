@@ -18,6 +18,7 @@ print("PowerPoint Karaoke Generator!")
 
 # get prompt from first command line argument
 prompt = sys.argv[1]
+prompt = prompt.strip("\"")
 print("Generating slides for keyword {}...".format(prompt))
 
 id = sys.argv[2]

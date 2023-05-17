@@ -11,7 +11,7 @@ from apikeys import openai_organization
 openai.organization = openai_organization
 openai.api_key = openai_api_key
 
-model = "gpt-3.5-turbo" #"gpt-4"
+model = "gpt-4"
 
 #
 # OpenAI stuff

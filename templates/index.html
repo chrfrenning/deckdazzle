@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DeckDazzle/1.0</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/js/script.js"></script>
+</head>
+
+<body>
+    <img src="static/gfx/logo.jpg" alt="DeckDazzle Logo" id="logo">
+    <h1>DeckDazzle/1.0</h1>
+    <script>helloWorld()</script>
+
+    <h2>Create a PowerPoint deck about anything!</h2>
+    <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
+    <form action="create-presentation" method="post">
+        <input type="text" name="presentationName" placeholder="Presentation name">
+        <input type="submit" value="Create">
+    </form>
+    <script>
+        // hook up the form to the createPresentation function
+        document.querySelector("form").addEventListener("submit", createPresentation);
+
+        // function that sends a POST request to /create-presentation?q= with the content of the input field
+        function createPresentation(event) {
+            event.preventDefault();
+            const presentationName = document.querySelector("input").value;
+            const data = {presentationName: presentationName};
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            };
+            fetch("/create-presentation?q=" + presentationName, options)
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+    </script>
+
+    <h2>Presentation History</h2>
+    <ul id="listOfPresos">
+
+    </ul>
+
+    <script>
+        // call /presentations to get json list of presentations and add them to the listOfPresos list
+        function updateListOfPresos() {
+            fetch("/presentations")
+                .then(response => response.json())
+                .then(data => {
+                    const listOfPresos = document.querySelector("#listOfPresos");
+                    // clear the list
+                    listOfPresos.innerHTML = "";
+                    // update the list
+                    data.forEach(preso => {
+                        const listItem = document.createElement("li");
+                        if ( preso.status == "done" ) {
+                            listItem.innerHTML = `<a href="${preso.source_url}">${preso.title}</a>`
+                        } else {
+                            listItem.innerHTML = `${preso.q} (${preso.status})`
+                        }
+                        
+                        listOfPresos.appendChild(listItem);
+                    });
+                });
+        }
+        updateListOfPresos();
+        // update the list of presos every five seconds
+        setInterval(updateListOfPresos, 5000);
+    </script>
+</body>
