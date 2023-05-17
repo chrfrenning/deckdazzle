@@ -73,9 +73,7 @@ def presentation_status(request_id):
     # check if the request_id is valid
     if request_id is None:
         abort(400, "Please provide a request id.")
-    if not os.path.exists(f"presentations/{request_id}.json"):
-        #abort(202, "Your request is being processed.")
-        return jsonify({"s": "pending"}), 202
+    
     
     try:
         filename = "presentations/{}.json".format(request_id)
@@ -85,7 +83,13 @@ def presentation_status(request_id):
             status['source_url'] = f"/presentations/{request_id}/download"
             return jsonify(status)
     except:
-        abort(500, "Internal error.")
+        pass
+
+    if os.path.exists(f"presentations/{request_id}.pending"):
+        return jsonify({"s": "pending"}), 202
+    else:
+        abort(404, "Not Found")
+
 
 @app.route("/presentations/<request_id>/download", methods=["GET"])
 def download_presentation(request_id):

@@ -1,6 +1,10 @@
 # powerpoint-karaoke-generator/1.0
 # chrifren@ifi.uio.no
 
+# this one is now falling behind
+# lets focus on building a web ui instead
+# (we have api, need html and some javascript)
+
 import os
 import re
 import time
