@@ -4,3 +4,4 @@ apikeys.py
 *.html
 template.*
 presentations/
+__pycache__/

@@ -18,7 +18,7 @@ Flask #==1.0.2
 # pytest-cov==2.4.0
 
 # Other requirements
-numpy
+# numpy
 click # ==8.0.4
 Flask # ==2.0.3
 itsdangerous # ==2.1.2

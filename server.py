@@ -4,7 +4,6 @@ import os
 import json
 import copy
 import uuid
-import numpy as np
 import subprocess
 from datetime import datetime
 
