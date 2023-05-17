@@ -3,6 +3,9 @@
 
 import os
 import re
+import sys
+import time
+import json
 import openai
 import datetime
 from base64 import b64decode
@@ -22,6 +25,14 @@ model = "gpt-3.5-turbo" #"gpt-4"
 
 # complete something with openai gpt
 def complete(text, grounding=""):
+    while True:
+        try:
+            return complete_once(text, grounding)
+        except openai.error.RateLimitError as e:
+            print("Rate limit reached, waiting for 5 seconds...")
+            time.sleep(20)
+
+def complete_once(text, grounding=""):
     response = openai.ChatCompletion.create(
         model=model,
         messages = [
@@ -38,6 +49,14 @@ def complete(text, grounding=""):
 
 # create image from text using openai, output to image.png
 def create_image(text, file_name):
+    while True:
+        try:
+            return create_image_once(text, file_name)
+        except openai.error.RateLimitError as e:
+            print("Rate limit reached, waiting for 5 seconds...")
+            time.sleep(20)
+
+def create_image_once(text, file_name):
     response = openai.Image.create(prompt=text,response_format="b64_json",n=1,size="512x512")
     img_data = b64decode( response.data[0].b64_json )
     with open(file_name, "wb") as fh:
@@ -71,9 +90,13 @@ grounding = """You are a writer producing a script for a speach. Based on the to
    Output the content in markdown format.
 """
 
-print("Welcome to the powerpoint karaoke generator!")
-prompt = input("Prompt: ")
-print("Generating slides...")
+print("PowerPoint Karaoke Generator!")
+# get prompt from first command line argument
+prompt = sys.argv[1]
+print("Generating slides for keyword {}...".format(prompt))
+
+id = sys.argv[2]
+print("Job id is '{}'.".format(id))
 
 # title
 title = complete("Create a title consisting of maximum 10 words for a speach about " + prompt, "")
@@ -87,6 +110,7 @@ topics = re.sub(r"^\d+\.\s+", "", topics, flags=re.MULTILINE)
 
 # content of each topic
 p_stored = []
+n_stored = []
 for i, n in enumerate( topics.split("\n") ):
     print("> Topic: " + n)
     points = complete("Based on the title \"{}\" create three bullet points of max 7 words for the section \"{}\", output as a numbered list.".format(title, n))
@@ -99,9 +123,19 @@ for i, n in enumerate( topics.split("\n") ):
     image_prompt = complete("Based on the title \"{}\" create an prompt for DALLE to create a creative photo, 3d-art or illustration for the section \"{}\" where the main points are {}.".format(title, n, points), "")
     create_image(image_prompt, "img_{}.png".format(i))
 
+    # create speaker notes
+    notes = complete("For a speach titled \"{}\", create a creative, witty and overly salesy narrative of maximum 100 words the section \"{}\" incorporating the main points: {}.".format(title, n, points), "")
+    print("  > " + notes)
+    n_stored.append(notes)
+
+# create filename in presentations subfolder using id
+filename = "presentations/{}.md".format(id)
+output_ppt = "presentations/{}.pptx".format(id)
+status_json = "presentations/{}.json".format(id)
+
 # save text to template.md
 date = datetime.datetime.now().strftime("%B %d, %Y") # format todays date as month name day, year
-with open("template.md", "w") as fh:
+with open(filename, "w") as fh:
     fh.write("% " + title + "\n")
     fh.write("% DeckDazzle/1.0" + "\n")
     fh.write("% " + date + "\n")
@@ -126,12 +160,19 @@ with open("template.md", "w") as fh:
         fh.write("::::::::::::::\n")
 
         fh.write("::: notes\n")
-        fh.write(p_stored[i] + "\n")
+        fh.write(n_stored[i] + "\n")
         fh.write(":::\n")
         fh.write("\n")
 
 # build powerpoint
-run_docker_pandoc("template.md", "output.pptx")
+run_docker_pandoc(filename, output_ppt)
+
+# status
+status = {"q": prompt, "s": "done", "title": title}
+with open(status_json, "w") as fh:
+    json.dump(status, fh)
+
+print("Done!")
 
 
 
