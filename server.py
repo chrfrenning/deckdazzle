@@ -12,9 +12,39 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    json = {
+        "application": "DeckDazzle/1.0",
+        "version": "1.0",
+        "api": {
+            "list-presentation": {
+                "endpoint": "/presentations",
+                "method": "GET",
+                "format": "json",
+                "help": "Returns a list of all presentations."
+            },
+            "create-presentation": { 
+                "endpoint": "/create-presentation?q=<keyword>", 
+                "method": "POST", 
+                "format": "json",
+                "help": "Creates a new presentation with the given keyword."
+            },
+            "presentation-status": {
+                "endpoint": "/presentations/<request_id>",
+                "method": "GET",
+                "format": "json",
+                "help": "Returns HTTP 202 until presentation is done, then 200 and json metadata."
+            },
+            "download-presentation": {
+                "endpoint": "/presentations/<request_id>/download",
+                "method": "GET",
+                "format": "pptx",
+                "help": "Downloads the presentation with the given request id. Available after presentation-status returns 200."
+            }
+        }
+    }
+    return jsonify(json)
 
-@app.route("/create-presentation", methods=["GET"])
+@app.route("/create-presentation", methods=["GET", "POST"])
 def create_presentation():
     # get the keyword from the request
     keyword = request.args.get("q")
@@ -28,6 +58,16 @@ def create_presentation():
     subprocess.Popen(["python3", "create.py", "\"{}\"".format(keyword), request_id])
     
     return jsonify({"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"})
+
+@app.route("/presentations", methods=["GET"])
+def list_presentations():
+    # list all files in the presentations directory
+    files = os.listdir("presentations")
+    # remove the file extension
+    files = [f.split(".")[0] for f in files]
+    # return unique list of files
+    presos = [{ "metadata" : f"/presentations/{u}", "source_url": f"/presentations/{u}/download" } for u in list(set(files))]
+    return jsonify(presos)
 
 @app.route("/presentations/<request_id>", methods=["GET"])
 def presentation_status(request_id):
@@ -47,33 +87,6 @@ def presentation_status(request_id):
             return jsonify(status)
     except:
         abort(500, "Internal error.")
-
-    # # load the presentation
-    # with open(f"presentations/{request_id}.json", "r") as fh:
-    #     presentation = json.load(fh)
-
-    # # check if the presentation is complete
-    # if presentation["complete"]:
-    #     return jsonify(presentation)
-
-    # # check if the presentation is in progress
-    # if presentation["in_progress"]:
-    #     return jsonify({"in_progress": True})
-
-    # # start the presentation
-    # presentation["in_progress"] = True
-    # with open(f"presentations/{request_id}.json", "w") as fh:
-    #     json.dump(presentation, fh)
-
-    # # create the presentation
-    # create_presentation(presentation)
-
-    # # mark the presentation as complete
-    # presentation["complete"] = True
-    # with open(f"presentations/{request_id}.json", "w") as fh:
-    #     json.dump(presentation, fh)
-
-    return jsonify({"s": "success"})
 
 @app.route("/presentations/<request_id>/download", methods=["GET"])
 def download_presentation(request_id):

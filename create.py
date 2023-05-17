@@ -91,12 +91,19 @@ grounding = """You are a writer producing a script for a speach. Based on the to
 """
 
 print("PowerPoint Karaoke Generator!")
+
 # get prompt from first command line argument
 prompt = sys.argv[1]
 print("Generating slides for keyword {}...".format(prompt))
 
 id = sys.argv[2]
 print("Job id is '{}'.".format(id))
+
+# signal we have a job
+pending_filename = "presentations/{}.pending".format(id)
+with open(pending_filename, "w") as fh:
+    s = {"status": "pending", "prompt": prompt, "id": id}
+    json.dump(s, fh)
 
 # title
 title = complete("Create a title consisting of maximum 10 words for a speach about " + prompt, "")
