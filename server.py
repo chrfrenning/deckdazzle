@@ -84,4 +84,7 @@ def download_presentation(request_id):
     return send_file(filename, as_attachment=True)
 
 if __name__ == "__main__":
+    # make sub directory for presentations
+    if not os.path.exists("presentations"):
+        os.mkdir("presentations")
     app.run(debug = True, host = "0.0.0.0", port = 3000)
