@@ -38,6 +38,12 @@ def api():
                 "method": "GET",
                 "format": "pptx",
                 "help": "Downloads the presentation with the given request id. Available after presentation-status returns 200."
+            },
+            "alcohol": {
+                "endpoint": "/alcohol",
+                "method": "GET",
+                "format": "n/a",
+                "help": "Endpoint which takes value from alcohol sensor as query parameter. Parameter used: v (e.g.: ?v=1"
             }
         }
     }
@@ -69,8 +75,6 @@ def alcohol():
     print("alcohol value: " + value);
     
     return jsonify({"alcohol": value})
-
-
 
 
 @app.route("/presentations", methods=["GET"])
