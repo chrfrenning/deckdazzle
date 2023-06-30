@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # powerpoint-karaoke-generator/1.0
 # chrifren@ifi.uio.no
 
