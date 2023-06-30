@@ -41,7 +41,7 @@ with open(pending_filename, "w") as fh:
 grounding = """You are a writer producing a script for a speach. Based on the topic
    provided, select a title for the speach. Create five sections for the speach,
    each with three bullet points. Each bullet point should be a sentence or two.
-   Output the content in markdown format.
+   Output the content in markdown format. Alt skal skrives på norsk.
 """
 
 
@@ -53,12 +53,12 @@ grounding = """You are a writer producing a script for a speach. Based on the to
 
 
 # title
-title = generator.complete("Create a title consisting of maximum 10 words for a speach about " + prompt, "")
+title = generator.complete("Lag en tittel som består av maksimalt 60 tegn for et foredrag om  " + prompt, ", skriv på norsk. vær litt vulgær")
 title.strip("\n\t\"")
 print("Title: " + title)
 
 # main topics
-topics = generator.complete("Based on the title \"{}\" create titles of max 10 words for five sections of the talk as a numbered list.".format(title))
+topics = generator.complete("basert på overskriften \"{}\"  lag overskrifter på maks 10 ord for 5 seksjoner av foredraget som en nummerert liste. ".format(title))
 topics = re.sub(r"^\d+\.\s+", "", topics, flags=re.MULTILINE)
 
 
@@ -74,11 +74,11 @@ for i, n in enumerate( topics.split("\n") ):
     p_stored.append(points)
 
     # create illustration
-    image_prompt = generator.complete("Based on the title \"{}\" create an prompt for DALLE to create a creative photo, 3d-art or illustration for the section \"{}\" where the main points are {}.".format(title, n, points), "")
-    generator.create_image(image_prompt, "presentations/img_{}_{}.png".format(id, i))
+    image_prompt = generator.complete("Based on the title \"{}\" create an prompt for DALLE to create a kids drawing for the section \"{}\" where the main points are {}.".format(title, n, points), " Max length of the prompt should be max 300 characters. ")
+    generator.create_image(image_prompt + " there should be no text in the image.", "presentations/img_{}_{}.png".format(id, i))
 
     # create speaker notes
-    notes = generator.complete("For a speach titled \"{}\", create a creative, witty and overly salesy narrative of maximum 100 words the section \"{}\" incorporating the main points: {}.".format(title, n, points), "")
+    notes = generator.complete("For a speach titled \"{}\", create a creative, witty and overly salesy narrative of maximum 100 words the section \"{}\" incorporating the main points: {}.".format(title, n, points), " svar på norsk")
     print("  > " + notes)
     n_stored.append(notes)
 

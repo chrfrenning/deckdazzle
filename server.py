@@ -57,6 +57,21 @@ def create_presentation():
     subprocess.Popen(["python3", "create.py", "\"{}\"".format(keyword), request_id])
     
     return jsonify({"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"})
+    
+    
+@app.route("/alcohol", methods=["GET"])
+def alcohol():
+    # get alcohol value from sensor
+    value = request.args.get("v")
+    if value is None:
+        abort(400, "No alcohol value ")
+
+    print("alcohol value: " + value);
+    
+    return jsonify({"alcohol": value})
+
+
+
 
 @app.route("/presentations", methods=["GET"])
 def list_presentations():
