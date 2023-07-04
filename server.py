@@ -38,6 +38,12 @@ def api():
                 "method": "GET",
                 "format": "pptx",
                 "help": "Downloads the presentation with the given request id. Available after presentation-status returns 200."
+            },
+            "alcohol": {
+                "endpoint": "/alcohol",
+                "method": "GET",
+                "format": "n/a",
+                "help": "Endpoint which takes value from alcohol sensor as query parameter. Parameter used: v (e.g.: ?v=1"
             }
         }
     }
@@ -57,6 +63,19 @@ def create_presentation():
     subprocess.Popen(["python3", "create.py", "\"{}\"".format(keyword), request_id])
     
     return jsonify({"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"})
+    
+    
+@app.route("/alcohol", methods=["GET"])
+def alcohol():
+    # get alcohol value from sensor
+    value = request.args.get("v")
+    if value is None:
+        abort(400, "No alcohol value ")
+
+    print("alcohol value: " + value);
+    
+    return jsonify({"alcohol": value})
+
 
 @app.route("/presentations", methods=["GET"])
 def list_presentations():

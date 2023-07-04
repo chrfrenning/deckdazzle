@@ -4,47 +4,28 @@
     <meta charset="UTF-8">
     <title>DeckDazzle/1.0</title>
     <link rel="stylesheet" href="static/css/style.css">
-    <script src="static/js/script.js"></script>
 </head>
 
 <body>
-    <img src="static/gfx/logo.jpg" alt="DeckDazzle Logo" id="logo">
-    <h1>DeckDazzle/1.0</h1>
-    <script>helloWorld()</script>
+  
+    
+    <header>
+        <img src="static/gfx/logo.jpg" alt="DeckDazzle Logo" id="logo">
+        <h1>DeckDazzle/1.0</h1>
+    </header>
+    <main>
+    
+        <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
+        <form action="create-presentation" method="post">
+            <input onkeyup="onFormInput(this)" type="text" name="presentationName" placeholder="Create a PowerPoint deck about anything!">
+            <button disabled type="submit">Create</button>
+        </form>
 
-    <h2>Create a PowerPoint deck about anything!</h2>
-    <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
-    <form action="create-presentation" method="post">
-        <input type="text" name="presentationName" placeholder="Presentation name">
-        <input type="submit" value="Create">
-    </form>
-    <script>
-        // hook up the form to the createPresentation function
-        document.querySelector("form").addEventListener("submit", createPresentation);
+        <h2>Presentation History</h2>
+        <ul id="listOfPresos">
 
-        // function that sends a POST request to /create-presentation?q= with the content of the input field
-        function createPresentation(event) {
-            event.preventDefault();
-            const presentationName = document.querySelector("input").value;
-            const data = {presentationName: presentationName};
-            const options = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            };
-            fetch("/create-presentation?q=" + presentationName, options)
-                .then(response => response.json())
-                .then(data => console.log(data));
-        }
-    </script>
-
-    <h2>Presentation History</h2>
-    <ul id="listOfPresos">
-
-    </ul>
-
+        </ul>
+    </main>
     <script>
         // call /presentations to get json list of presentations and add them to the listOfPresos list
         function updateListOfPresos() {
@@ -60,7 +41,7 @@
                         if ( preso.status == "done" ) {
                             listItem.innerHTML = `<a href="${preso.source_url}">${preso.title}</a>`
                         } else {
-                            listItem.innerHTML = `${preso.q} (${preso.status})`
+                            listItem.innerHTML = `${preso.q} <div class="lds-ring"><div></div><div></div><div></div><div></div></div>`
                         }
                         
                         listOfPresos.appendChild(listItem);
@@ -71,4 +52,7 @@
         // update the list of presos every five seconds
         setInterval(updateListOfPresos, 5000);
     </script>
+
+<script src="static/js/script.js"></script>
+<script src="static/js/form.js"></script>
 </body>

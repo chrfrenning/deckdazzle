@@ -1,3 +1,5 @@
 apikeys.py
 presentations/
+great_presentations/
 __pycache__/
+.DS_Store
