@@ -57,7 +57,7 @@ def create_presentation():
     request_id = str(uuid.uuid4())
 
     # start karaoke.py in a subprocess with the keyword and the request id as params
-    subprocess.Popen(["python3", "create.py", "\"{}\"".format(keyword), request_id])
+    subprocess.Popen(["python3", "create.py", f"{keyword}", request_id])
 
     return jsonify(
         {"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"}
