@@ -75,7 +75,7 @@ for i, n in enumerate(topics.split("\n")):
     # create illustration
     image_prompt = generator.complete(
         f"\nBased on the title {title}, create a prompt that DALL-E can use to create an image for the section {n}, where the main points are: \n{points}",
-        "Maximum length of the prompt is 300 characters and make the prompt in English. Include in the prompt that the the image cannot include language, text, letters, words or language of any kind or in the form of a movie poster.\n",
+        "Maximum length of the prompt is 300 characters and make the prompt in English. Include in the prompt that the the image cannot include language, text, letters, words of any kind.\n",
     )
     print("IMAGE_PROMPT: " + image_prompt)
     generator.create_image(
