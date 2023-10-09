@@ -244,8 +244,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Python files
-apikeys.py
-
 # Folders
 presentations/

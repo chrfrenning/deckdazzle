@@ -13,18 +13,18 @@ import pandoc
 # Boot this thing
 #
 
-print("PowerPoint Karaoke Generator!")
+print("\nPowerPoint Karaoke Generator!\n")
 
 # get prompt from first command line argument
 prompt = sys.argv[1]
 prompt = prompt.strip("\"")
-print("Generating slides for keyword {}...".format(prompt))
+print(f"Generating slides for keyword '{prompt}'...\n")
 
 id = sys.argv[2]
-print("Job id is '{}'.".format(id))
+print(f"Job id is '{id}'.\n")
 
 # signal we have a job (api can return processing)
-pending_filename = "presentations/{}.pending".format(id)
+pending_filename = f"presentations/{id}.pending"
 with open(pending_filename, "w") as fh:
     s = {"status": "pending", "prompt": prompt, "id": id}
     json.dump(s, fh)
@@ -34,11 +34,10 @@ with open(pending_filename, "w") as fh:
 # Grounding
 #
 
-grounding = """You are a writer producing a script for a speach. Based on the topic
-   provided, select a title for the speach. Create five sections for the speach,
-   each with three bullet points. Each bullet point should be a sentence or two.
-   Output the content in markdown format. Alt skal skrives på norsk.
-"""
+grounding = """You are a writer producing a script for a speech. Based on the topic
+   provided, select a title for the speech. Create five sections for the speech,
+   each with three bullet points. Each bullet point should be maximum two sentences.
+   Output the content in markdown format. The speech has to be in Norwegian."""
 
 
 #
@@ -48,56 +47,48 @@ grounding = """You are a writer producing a script for a speach. Based on the to
 
 # title
 title = generator.complete(
-    "Lag en tittel som består av maksimalt 60 tegn for et foredrag om  " + prompt,
-    ", skriv på norsk. vær litt vulgær",
+    f"Create a title that consists of maximum 60 characters for a presentation about '{prompt}'.",
+    "The title has to be in Norwegian and a little vulgar\n",
 )
 title.strip("\n\t\"")
-print("Title: " + title)
+print("Title: " + title + "\n")
 
 # main topics
 topics = generator.complete(
-    "basert på overskriften \"{}\"  lag overskrifter på maks 10 ord for 5 seksjoner av foredraget som en nummerert liste. ".format(
-        title
-    )
+    f"\nBased on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list."
 )
 topics = re.sub(r"^\d+\.\s+", "", topics, flags=re.MULTILINE)
-
 
 # content of each topic
 p_stored = []
 n_stored = []
 for i, n in enumerate(topics.split("\n")):
-    print("> Topic: " + n)
+    print("    > Topic: " + n + "\n")
     points = generator.complete(
-        "Based on the title \"{}\" create three bullet points of max 7 words for the section \"{}\", output as a numbered list.".format(
-            title, n
-        )
+        f"\nBased on the title {title}, create 3 bullet points of maximum 7 words for the section {n} as a numbered list."
     )
     points = re.sub(r"^\d+\.\s+", "", points, flags=re.MULTILINE)
-    for n in points.split("\n"):
-        print("  > " + n)
+    for j, k in enumerate(points.split("\n")):
+        print(f"    > Point {j+1}: " + k + ".")
     p_stored.append(points)
 
     # create illustration
     image_prompt = generator.complete(
-        "Based on the title \"{}\" create an prompt for DALLE to create a kids drawing for the section \"{}\" where the main points are {}.".format(
-            title, n, points
-        ),
-        " Max length of the prompt should be max 300 characters. ",
+        f"\nBased on the title {title}, create a prompt that DALL-E can use to create an image for the section {n}, where the main points are: \n{points}",
+        "Maximum length of the prompt is 300 characters and make the prompt in English. Include in the prompt that the the image cannot include language, text, letters, words of any kind.\n",
     )
+    print("IMAGE_PROMPT: " + image_prompt)
     generator.create_image(
-        image_prompt + " there should be no text in the image.",
-        "presentations/img_{}_{}.png".format(id, i),
+        image_prompt,
+        f"presentations/img_{id}_{i}.png",
     )
 
     # create speaker notes
     notes = generator.complete(
-        "For a speach titled \"{}\", create a creative, witty and overly salesy narrative of maximum 100 words the section \"{}\" incorporating the main points: {}.".format(
-            title, n, points
-        ),
-        " svar på norsk",
+        f"\nFor a speech with the title {title}, create a creative, witty and overly salesy narrative of maximum 100 words for the section {n} that incorporates these main points: \n{points}",
+        "The speech has to be written in Norwegian\n",
     )
-    print("  > " + notes)
+    print("    > " + notes + "\n")
     n_stored.append(notes)
 
 # create filename in presentations subfolder using id
@@ -156,4 +147,4 @@ status = {"q": prompt, "s": "done", "title": title}
 with open(status_json, "w") as fh:
     json.dump(status, fh)
 
-print("Done!")
+print("Powerpoint completed!\n")

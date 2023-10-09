@@ -37,11 +37,13 @@ def complete_once(text, grounding=""):
             {"role": "system", "content": text},
         ],
         max_tokens=500,
-        temperature=0.9,
+        temperature=1,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
     )
+    print(text)
+    print(grounding)
     return response.choices[0].message.content
 
 
@@ -57,7 +59,7 @@ def create_image(text, file_name):
 
 def create_image_once(text, file_name):
     response = openai.Image.create(
-        prompt=text, response_format="b64_json", n=1, size="512x512"
+        prompt=text, response_format="b64_json", n=1, size="1024x1024"
     )
     img_data = b64decode(response.data[0].b64_json)
     with open(file_name, "wb") as fh:
