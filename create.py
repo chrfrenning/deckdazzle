@@ -50,14 +50,15 @@ title = generator.complete(
     f"Create a title that consists of maximum 60 characters for a presentation about '{prompt}'.",
     "The title has to be in Norwegian and a little vulgar\n",
 )
-title.strip("\n\t\"")
+title = title.strip("\"\"\n\t\"")
 print("Title: " + title + "\n")
 
 # main topics
 topics = generator.complete(
     f"Based on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list."
 )
-topics = re.sub(r"^\d+\.\s+", "", topics, flags=re.MULTILINE)
+print(topics)
+topics = re.sub(r'[\d".,!?]', "", topics, flags=re.MULTILINE)
 
 # content of each topic
 p_stored = []
@@ -65,12 +66,16 @@ n_stored = []
 for i, n in enumerate(topics.split("\n")):
     print(f"\n Generating slide {i + 1}...\n")
     print("    > Topic: " + n + "\n")
+
     points = generator.complete(
-        f"Based on the title {title}, create 3 bullet points of maximum 7 words for the section {n} as a numbered list."
+        f"Based on the title {title}, create 3 bullet points containing only keywords of maximum 5 words for the section {n} as a numbered list."
     )
-    points = re.sub(r"^\d+\.\s+", "", points, flags=re.MULTILINE)
-    for j, k in enumerate(points.split("\n")):
-        print(f"    > Point {j+1}: " + k + ".")
+
+    print("\n")
+    points = re.sub(r'[\d".,!?]', "", points, flags=re.MULTILINE)
+    for k, v in enumerate(points.split("\n")):
+        print(f"    > Point {k+1}: " + v)
+    print("\n")
     p_stored.append(points)
 
     # create illustration
@@ -88,8 +93,10 @@ for i, n in enumerate(topics.split("\n")):
         f"For a speech with the title {title}, create a creative, witty and overly salesy narrative of maximum 100 words for the section {n} that incorporates these main points: \n{points}",
         "The speech has to be written in Norwegian\n",
     )
+    notes = notes.strip("\"\"")
     print("\n    > " + notes)
     n_stored.append(notes)
+
 
 # create filename in presentations subfolder using id
 filename = "presentations/{}.md".format(id)
@@ -100,6 +107,7 @@ status_json = "presentations/{}.json".format(id)
 #
 # Generate the powerpoint doc
 #
+
 
 # save text to template.md
 date = datetime.datetime.now().strftime(
@@ -141,6 +149,7 @@ pandoc.run_docker_pandoc(filename, output_ppt)
 #
 # Save the result and update status for api
 #
+
 
 # status
 status = {"q": prompt, "s": "done", "title": title}
