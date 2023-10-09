@@ -63,21 +63,23 @@ topics = re.sub(r"^\d+\.\s+", "", topics, flags=re.MULTILINE)
 p_stored = []
 n_stored = []
 for i, n in enumerate(topics.split("\n")):
+    print(f"\n Generating slide {i + 1}...\n")
     print("    > Topic: " + n + "\n")
     points = generator.complete(
-        f"\nBased on the title {title}, create 3 bullet points of maximum 7 words for the section {n} as a numbered list."
+        f"Based on the title {title}, create 3 bullet points of maximum 7 words for the section {n} as a numbered list."
     )
     points = re.sub(r"^\d+\.\s+", "", points, flags=re.MULTILINE)
+    print("\n")
     for j, k in enumerate(points.split("\n")):
         print(f"    > Point {j+1}: " + k + ".")
+    print("\n")
     p_stored.append(points)
 
     # create illustration
     image_prompt = generator.complete(
-        f"\nBased on the title {title}, create a prompt that DALL-E can use to create an image for the section {n}, where the main points are: \n{points}",
+        f"Based on the title {title}, create a prompt that DALL-E can use to create an image for the section {n}, where the main points are: \n{points}",
         "Maximum length of the prompt is 300 characters and make the prompt in English. Include in the prompt that the the image cannot include language, text, letters, words of any kind.\n",
     )
-    print("IMAGE_PROMPT: " + image_prompt)
     generator.create_image(
         image_prompt,
         f"presentations/img_{id}_{i}.png",
@@ -85,10 +87,12 @@ for i, n in enumerate(topics.split("\n")):
 
     # create speaker notes
     notes = generator.complete(
-        f"\nFor a speech with the title {title}, create a creative, witty and overly salesy narrative of maximum 100 words for the section {n} that incorporates these main points: \n{points}",
+        f"For a speech with the title {title}, create a creative, witty and overly salesy narrative of maximum 100 words for the section {n} that incorporates these main points: \n{points}",
         "The speech has to be written in Norwegian\n",
     )
-    print("    > " + notes + "\n")
+    print("\n    > " + notes)
+    if i == 4:
+        print("\n")
     n_stored.append(notes)
 
 # create filename in presentations subfolder using id
@@ -114,25 +118,15 @@ with open(filename, "w") as fh:
     for i, n in enumerate(topics.split("\n")):
         fh.write("## " + n + "\n")
 
-        fh.write(":::::::::::::: {.columns}\n")
-        fh.write("::: {.column width=\"50%\"}\n")
+        fh.write(f"![](presentations/img_{id}_{i}.png)\n")
+        fh.write("\n")
 
+        fh.write("::: notes\n")
         for m in p_stored[i].split("\n"):
             fh.write("- " + m + "\n")
         fh.write("\n")
-
-        fh.write(":::\n")
-        fh.write("::: {.column width=\"50%\"}\n")
-
-        fh.write("![](presentations/img_{}_{}.png)\n".format(id, i))
-        fh.write("\n")
-        fh.write(":::\n")
-        fh.write("::::::::::::::\n")
-
-        fh.write("::: notes\n")
         fh.write(n_stored[i] + "\n")
         fh.write(":::\n")
-        fh.write("\n")
 
 # build powerpoint
 pandoc.run_docker_pandoc(filename, output_ppt)
@@ -147,4 +141,4 @@ status = {"q": prompt, "s": "done", "title": title}
 with open(status_json, "w") as fh:
     json.dump(status, fh)
 
-print("Powerpoint completed!\n")
+print("\nPowerpoint completed!\n")
