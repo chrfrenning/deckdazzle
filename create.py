@@ -69,10 +69,8 @@ for i, n in enumerate(topics.split("\n")):
         f"Based on the title {title}, create 3 bullet points of maximum 7 words for the section {n} as a numbered list."
     )
     points = re.sub(r"^\d+\.\s+", "", points, flags=re.MULTILINE)
-    print("\n")
     for j, k in enumerate(points.split("\n")):
         print(f"    > Point {j+1}: " + k + ".")
-    print("\n")
     p_stored.append(points)
 
     # create illustration
@@ -91,8 +89,6 @@ for i, n in enumerate(topics.split("\n")):
         "The speech has to be written in Norwegian\n",
     )
     print("\n    > " + notes)
-    if i == 4:
-        print("\n")
     n_stored.append(notes)
 
 # create filename in presentations subfolder using id
