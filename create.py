@@ -55,7 +55,7 @@ print("Title: " + title + "\n")
 
 # main topics
 topics = generator.complete(
-    f"\nBased on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list."
+    f"Based on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list."
 )
 print(topics)
 topics = re.sub(r'[\d".,!?]', "", topics, flags=re.MULTILINE)
