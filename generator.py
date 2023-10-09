@@ -42,8 +42,6 @@ def complete_once(text, grounding=""):
         frequency_penalty=0.0,
         presence_penalty=0.0,
     )
-    print(text)
-    print(grounding)
     return response.choices[0].message.content
 
 
