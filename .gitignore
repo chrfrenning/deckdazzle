@@ -244,5 +244,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Files to ignore
+apikeys.py
+
 # Folders
 presentations/
