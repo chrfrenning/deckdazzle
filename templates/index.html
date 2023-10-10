@@ -15,13 +15,12 @@
     <h2>Create a PowerPoint deck about anything!</h2>
     <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
     <form action="create-presentation" method="post">
-        <input type="text" name="presentationName" placeholder="Presentation name">
-        <input type="submit" value="Create">
+        <input id= "presentationNameInputField" type="text" name="presentationName" placeholder="Presentation name">
+        <input id= "createButton" type="submit" value="Create">
     </form>
     <script>
-        // hook up the form to the createPresentation function
         document.querySelector("form").addEventListener("submit", createPresentation);
-
+        document.querySelector("form").addEventListener("submit", clearInput);
         // function that sends a POST request to /create-presentation?q= with the content of the input field
         function createPresentation(event) {
             event.preventDefault();
@@ -37,6 +36,12 @@
             fetch("/create-presentation?q=" + presentationName, options)
                 .then(response => response.json())
                 .then(data => console.log(data));
+    
+            }
+
+        function clearInput(){
+            document.getElementById("presentationNameInputField").value = "";
+            
         }
     </script>
 
@@ -46,6 +51,7 @@
     </ul>
 
     <script>
+
         // call /presentations to get json list of presentations and add them to the listOfPresos list
         function updateListOfPresos() {
             fetch("/presentations")
@@ -64,11 +70,37 @@
                         }
                         
                         listOfPresos.appendChild(listItem);
+                        
                     });
-                });
+                
+                });   
+
         }
         updateListOfPresos();
         // update the list of presos every five seconds
         setInterval(updateListOfPresos, 5000);
+    </script>
+    <button type="button" id="deleteAll">Delete all presentations</button>
+    <script>
+      var deleteButton = document.getElementById("deleteAll");
+      deleteButton.addEventListener("click",deleteAllPresentations )
+      function deleteAllPresentations(){
+        event.preventDefault();
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            };
+            fetch("/delete-all-presentations")
+      }
+    </script>
+    <script>
+        function printHello(){
+            console.log("Hello " +  ids);
+        }
+        function printHello(d){
+            console.log("Hello "+  d );
+        }
     </script>
 </body>
