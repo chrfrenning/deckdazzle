@@ -83,7 +83,7 @@
     <button type="button" id="deleteAll">Delete all presentations</button>
     <script>
       var deleteButton = document.getElementById("deleteAll");
-      deleteButton.addEventListener("click",deleteAllPresentations )
+      deleteButton.addEventListener("click", deleteAllPresentations)
       function deleteAllPresentations(){
         event.preventDefault();
             const options = {
@@ -94,13 +94,5 @@
             };
             fetch("/delete-all-presentations")
       }
-    </script>
-    <script>
-        function printHello(){
-            console.log("Hello " +  ids);
-        }
-        function printHello(d){
-            console.log("Hello "+  d );
-        }
     </script>
 </body>

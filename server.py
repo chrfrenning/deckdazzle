@@ -3,6 +3,7 @@
 
 import json
 import os
+import shutil
 import subprocess
 import uuid
 
@@ -62,8 +63,9 @@ def create_presentation():
     return jsonify(
         {"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"}
     )
-    
-@app.route("/delete-all-presentation", methods=["GET", "POST"])
+
+
+@app.route("/delete-all-presentations", methods=["GET", "POST"])
 def delete_presentation():
     folder = 'presentations'
     for filename in os.listdir(folder):
@@ -75,8 +77,9 @@ def delete_presentation():
                 shutil.rmtree(file_path)
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
-            
+
     return jsonify("OK")
+
 
 @app.route("/alcohol", methods=["GET"])
 def alcohol():
