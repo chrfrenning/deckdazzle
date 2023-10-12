@@ -1,4 +1,3 @@
-/* Styling for the file list */
 .file-list {
     margin-top: 20px;
     padding: 10px;
@@ -16,9 +15,8 @@
 
 .button-container form {
     display: inline-block;
-    margin-right: 10px; /* Adjust the margin as needed to control the distance */
+    margin-right: 10px; 
 }
-
 
 ol {
     background: #eedecd;
@@ -29,8 +27,7 @@ ol li {
     background:  #fbeee0;
     color:  #422800;
     padding: 3px;
-    margin-left: 35px;
-    
+    margin-left: 35px;   
 }
 
 ul {
@@ -48,16 +45,13 @@ a {
     text-decoration: none; 
 }
 
-
 a:visited {
     color: purple; 
 }
 
-
 a:hover {
     color: rgb(226, 178, 178); 
 }
-
 
 a:active {
     color: green; 
@@ -85,32 +79,6 @@ h3 {
 .chosen-file {
     text-decoration: line-through;
     color: #3c3939; 
-}
-
-
-
-.button-33 {
-  background-color: #fbeee0;
-  border-radius: 100px;
-  color: black;
-  border: 2px solid #422800;
-  cursor: pointer;
-  display: inline-block;
-  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
-  padding: 7px 20px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 250ms;
-  border: 0;
-  font-size: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-.button-33:hover {
-  box-shadow: #422800;
-  transform: scale(1.05) rotate(-1deg);
 }
 
 .button-74 {

@@ -4,11 +4,6 @@ let spinning = false;
 let fileNamesData;
 let fileNames;
 
-function noPresentations() {
-    const container = document.getElementById("container");
-    container.textContent = "No presentations to spin";
-}
-
 function startSpinning() {
     if (!spinning) {
         fileNamesData = document.getElementById("fileNames").value;

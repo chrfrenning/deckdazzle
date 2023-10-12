@@ -162,25 +162,18 @@ file_names_global = [file for file in os.listdir(folder_path) if file.endswith("
 
 @app.route('/spin', methods=['GET', 'POST'])
 def spin():
-    print(file_names_global)
-    #if request.method == 'POST' and request.form.get('action') == 'retrieve':
-        # Retrieve the list of presentations from the folder
-    #    file_names_global[:] = [file for file in os.listdir(folder_path) if file.endswith(".pptx")]   
     return render_template('spin.html', file_names=file_names_global)
 
 @app.route('/retrieve_presentations', methods=['GET'])
 def retrieve_presentations():
     file_names_global[:] = [file for file in os.listdir(folder_path) if file.endswith(".pptx")]
-    return 'Success'  # Return a response indicating success
-
+    return 'Success'  
 
 @app.route('/delete_file', methods=['POST'])
 def delete_file():
     chosen_file_name = request.json.get('chosenFileName')
     file_names_global.remove(chosen_file_name)
-    print("list after deleted filename ", file_names_global)
     return 'File deleted successfully'
-
  
 @app.route('/')
 def home():

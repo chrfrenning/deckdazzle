@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <title>Draw Presentation</title>
     <link rel="stylesheet" href="static/css/spin.css">
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Jnujsl5+z0I5t5Yhqbs5r1Ft0UxPmdwyaO3AJ5xM5S9emw" crossorigin="anonymous">-->
 </head>
 
 </head>
 <body>
-    
-    <!-- Form for adding files
-    <form method="POST">
-        <input type="text" name="file_name" placeholder="Enter a file name">
-        <button type="submit">Add presentation</button>
-    </form> -->
-
     <!-- List of uploaded files -->
     <div class="button-container">
         <form action="/" method="GET">
@@ -26,7 +18,7 @@
             <input type="submit" value="Retrieve Presentations">
         </form>
     </div>
-    
+
     <h2>Presentations:</h2>
     <ol id="presentation-list">
         {% if file_names %}
@@ -41,7 +33,6 @@
     <script src="static/js/spin.js"></script>
 
     <form>
-         <!--<button class="button-74" role="button" id="spinButton">Spin the Wheel</button>-->
         <button class="button-74" role="button" id ="spinButton">Spin the Wheel</button>
     </form>
 
