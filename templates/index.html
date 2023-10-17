@@ -1,105 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>DeckDazzle/1.1</title>
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/style.css" />
     <script src="static/js/script.js"></script>
-</head>
+  </head>
 
-<body>
-  <img src="static/gfx/bouvet_logo_tekst.jpg" alt="DeckDazzle Logo" id="logo">
-
-    <h1>BouvetOne - Powerpoint Karaoke</h1>
-    <h4>Powered by DeckDazzle
-        - Create a PowerPoint deck about anything!</h4>
+  <img src="static/gfx/bouvet_logo.png" alt="Bouvet logo" id="logo" />
+  <body>
+    <h1 class="center">BouvetOne - Powerpoint Karaoke</h1>
+    <h4 class="center">
+      Powered by DeckDazzle - Create a PowerPoint deck about anything!
+    </h4>
     <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
-    <form action="create-presentation" method="post">
-        <input id= "presentationNameInputField" type="text" name="presentationName" placeholder="Presentation name">
-        <input id= "createButton" type="submit" value="Create">
+    <form class="center" action="create-presentation" method="post">
+      <input
+        id="presentationNameInputField"
+        type="text"
+        name="presentationName"
+        placeholder="Presentation name"
+      />
+      <input id="createButton" type="submit" value="Create" />
     </form>
     <script>
-        document.querySelector("form").addEventListener("submit", createPresentation);
-        document.querySelector("form").addEventListener("submit", clearInput);
-        // function that sends a POST request to /create-presentation?q= with the content of the input field
-        function createPresentation(event) {
-            event.preventDefault();
-            const presentationName = document.querySelector("input").value;
-            const data = {presentationName: presentationName};
-            const options = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            };
-            fetch("/create-presentation?q=" + presentationName, options)
-                .then(response => response.json())
-                .then(data => console.log(data));
-    
-            }
+      document
+        .querySelector("form")
+        .addEventListener("submit", createPresentation);
+      document.querySelector("form").addEventListener("submit", clearInput);
+      // function that sends a POST request to /create-presentation?q= with the content of the input field
+      function createPresentation(event) {
+        event.preventDefault();
+        const presentationName = document.querySelector("input").value;
+        const data = { presentationName: presentationName };
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        };
+        fetch("/create-presentation?q=" + presentationName, options)
+          .then((response) => response.json())
+          .then((data) => console.log(data));
+      }
 
-        function clearInput(){
-            document.getElementById("presentationNameInputField").value = "";
-            
-        }
+      function clearInput() {
+        document.getElementById("presentationNameInputField").value = "";
+      }
     </script>
 
-    <h2>Presentation History</h2>
-    <ul id="listOfPresos">
-
-    </ul>
+    <h2 class="center">Presentation History</h2>
+    <ul id="listOfPresos"></ul>
 
     <script>
+      // call /presentations to get json list of presentations and add them to the listOfPresos list
+      function updateListOfPresos() {
+        fetch("/presentations")
+          .then((response) => response.json())
+          .then((data) => {
+            const listOfPresos = document.querySelector("#listOfPresos");
+            // clear the list
+            listOfPresos.innerHTML = "";
+            // update the list
+            data.forEach((preso) => {
+              const listItem = document.createElement("li");
+              if (preso.status == "done") {
+                listItem.innerHTML = `<a href="${preso.source_url}">${preso.title}</a>`;
+              } else {
+                listItem.innerHTML = `${preso.q} (${preso.status})`;
+              }
 
-        // call /presentations to get json list of presentations and add them to the listOfPresos list
-        function updateListOfPresos() {
-            fetch("/presentations")
-                .then(response => response.json())
-                .then(data => {
-                    const listOfPresos = document.querySelector("#listOfPresos");
-                    // clear the list
-                    listOfPresos.innerHTML = "";
-                    // update the list
-                    data.forEach(preso => {
-                        const listItem = document.createElement("li");
-                        if ( preso.status == "done" ) {
-                            listItem.innerHTML = `<a href="${preso.source_url}">${preso.title}</a>`
-                        } else {
-                            listItem.innerHTML = `${preso.q} (${preso.status})`
-                        }
-                        
-                        listOfPresos.appendChild(listItem);
-                        
-                    });
-                
-                });   
-
-        }
-        updateListOfPresos();
-        // update the list of presos every five seconds
-        setInterval(updateListOfPresos, 5000);
+              listOfPresos.appendChild(listItem);
+            });
+          });
+      }
+      updateListOfPresos();
+      // update the list of presos every five seconds
+      setInterval(updateListOfPresos, 5000);
     </script>
     <button type="button" id="deleteAll">Delete all presentations</button>
     <script>
       var deleteButton = document.getElementById("deleteAll");
-      deleteButton.addEventListener("click", deleteAllPresentations)
-      function deleteAllPresentations(){
+      deleteButton.addEventListener("click", deleteAllPresentations);
+      function deleteAllPresentations() {
         event.preventDefault();
-            const options = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            };
-            fetch("/delete-all-presentations")
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        fetch("/delete-all-presentations");
       }
     </script>
 
-    <div style="margin-top: 20px;"></div>
+    <div style="margin-top: 20px"></div>
 
     <form action="/spin" method="POST">
-        <button type="submit">Find out which presentation you should perform</button>
+      <button type="submit">
+        Find out which presentation you should perform
+      </button>
     </form>
-
-</body>
+  </body>
+</html>
