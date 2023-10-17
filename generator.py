@@ -38,7 +38,7 @@ def complete_once(text, grounding=""):
         ],
         max_tokens=500,
         temperature=1,
-        top_p=1.0,
+        top_p=0.3,
         frequency_penalty=0.0,
         presence_penalty=0.0,
     )
