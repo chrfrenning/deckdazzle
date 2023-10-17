@@ -157,11 +157,27 @@ def download_presentation(request_id):
     # send content of filename in result
     return send_file(filename, as_attachment=True)
 
+folder_path = "./presentations"
+file_names_global = [file for file in os.listdir(folder_path) if file.endswith(".pptx")]
 
+@app.route('/spin', methods=['GET', 'POST'])
+def spin():
+    return render_template('spin.html', file_names=file_names_global)
+
+@app.route('/retrieve_presentations', methods=['GET'])
+def retrieve_presentations():
+    file_names_global[:] = [file for file in os.listdir(folder_path) if file.endswith(".pptx")]
+    return 'Success'  
+
+@app.route('/delete_file', methods=['POST'])
+def delete_file():
+    chosen_file_name = request.json.get('chosenFileName')
+    file_names_global.remove(chosen_file_name)
+    return 'File deleted successfully'
+ 
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 if __name__ == "__main__":
     # make sub directory for presentations
