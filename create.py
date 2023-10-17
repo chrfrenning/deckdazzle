@@ -55,7 +55,8 @@ print("Title: " + title + "\n")
 
 # main topics
 topics = generator.complete(
-    f"Based on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list."
+    f"Based on the title {title}, create headlines of maximum 10 words for 5 sections for the presentation as a numbered list.",
+    "The headlines have to be written in Norwegian",
 )
 topics = re.sub(r'[\d".,!?]', "", topics, flags=re.MULTILINE)
 
@@ -67,7 +68,8 @@ for i, n in enumerate(topics.split("\n")):
     print("    > Topic: " + n + "\n")
 
     points = generator.complete(
-        f"Based on the title {title}, create 3 bullet points containing only keywords of maximum 5 words for the section {n} as a numbered list."
+        f"Based on the title {title}, create 3 bullet points containing only keywords of maximum 5 words for the section {n} as a numbered list.",
+        "The bullet points have to be written in Norwegian",
     )
 
     print("\n")
