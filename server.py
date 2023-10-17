@@ -15,8 +15,8 @@ app = Flask(__name__)
 @app.route("/api")
 def api():
     json = {
-        "application": "DeckDazzle/1.0",
-        "version": "1.0",
+        "application": "DeckDazzle/1.1",
+        "version": "1.1",
         "api": {
             "list-presentation": {
                 "endpoint": "/presentations",
