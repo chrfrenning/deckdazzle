@@ -1,0 +1,103 @@
+[
+    {
+        "id": "f27046963827ccfc",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ddea78d2f25e2fa6",
+        "type": "debug",
+        "z": "f27046963827ccfc",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4286a74c4a2115be",
+        "type": "serial in",
+        "z": "f27046963827ccfc",
+        "name": "Micro:bit",
+        "serial": "24f385c88add4979",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "dec0292d59e14801"
+            ]
+        ]
+    },
+    {
+        "id": "5df5e5f7f6c24d3a",
+        "type": "http request",
+        "z": "f27046963827ccfc",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "localhost:3000/alcohol?v={{{payload}}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 490,
+        "y": 200,
+        "wires": [
+            [
+                "ddea78d2f25e2fa6"
+            ]
+        ]
+    },
+    {
+        "id": "dec0292d59e14801",
+        "type": "function",
+        "z": "f27046963827ccfc",
+        "name": "function 1",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 200,
+        "wires": [
+            [
+                "5df5e5f7f6c24d3a"
+            ]
+        ]
+    },
+    {
+        "id": "24f385c88add4979",
+        "type": "serial-port",
+        "serialport": "/dev/ttyACM0",
+        "serialbaud": "115200",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    }
+]

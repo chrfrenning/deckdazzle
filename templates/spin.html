@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Draw Presentation</title>
+    <link rel="stylesheet" href="static/css/spin.css">
+</head>
+
+</head>
+<body>
+    <!-- List of uploaded files -->
+    <div class="button-container">
+        <form action="/" method="GET">
+            <button type="back">Go back to the main page</button>
+        </form>
+    
+        <form id="retrieve-form">
+            <input type="submit" value="Retrieve Presentations">
+        </form>
+    </div>
+
+    <h2>Presentations:</h2>
+    <ol id="presentation-list">
+        {% if file_names %}
+            {% for file_name in file_names %}
+            <li class="file-item"><a href="/presentations/{% if file_name.endswith('.pptx') %}{{ file_name[:-5] }}{% else %}{{ file_name }}{% endif %}/download">{{ file_name }}</a></li>
+            {% endfor %}
+        {% else %}
+            <p>There are no presentations available.</p>
+        {% endif %}
+    </ol>
+ 
+    <script src="static/js/spin.js"></script>
+
+    <form>
+        <button class="button-74" role="button" id ="spinButton">Spin the Wheel</button>
+    </form>
+
+    <input type="hidden" id="fileNames" value='{{ file_names | tojson | safe }}'>
+
+    <h3>You should perform the following presentation: </h3>
+
+    <div class="container" id="container"></div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#retrieve-form').submit(function(e) {
+                e.preventDefault();  // Prevent the form submission
+                $.get('/retrieve_presentations', function(data) {
+                    if (data === 'Success') {
+                        // Update the presentation list on the page
+                        $.get('/spin', function(updatedContent) {
+                            $('#presentation-list').html($(updatedContent).find('#presentation-list').html());
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        const spinButton = document.getElementById("spinButton");
+        const container = document.getElementById("container");
+    
+        function checkAndDisplayMessage() {
+            const fileNamesData = document.getElementById("fileNames").value;
+    
+            if (fileNamesData.trim() === '[]') {
+                container.textContent = "No presentations to spin";
+            } else {
+                spinButton.addEventListener("click", startSpinning);
+            }
+        }
+    
+        // Attach the checkAndDisplayMessage function to the button click event
+        spinButton.addEventListener("click", checkAndDisplayMessage);
+    
+        // Call the function on page load to handle the initial state
+        checkAndDisplayMessage();
+    </script>
+
+    
+
+</body>
+</html>
+

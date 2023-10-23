@@ -1,6 +1,38 @@
-h1 {
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.center {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-#logo {
-    width: 100px;
+
+img {
+  width: 400px;
+}
+
+body {
+  background-image: url("../gfx/prate_fortelle_presentere.png"),
+    url("../gfx/Kunstner.png");
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+  background-position: bottom right, bottom left;
+  background-size: 30%;
+}
+
+button {
+  text-align: center;
+}
+
+input {
+  text-align: center;
+}
+
+body {
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  text-align: center;
+  margin-right: 40px;
 }
