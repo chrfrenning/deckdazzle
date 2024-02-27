@@ -5,14 +5,13 @@ import time
 from base64 import b64decode
 
 import openai
+from openai import OpenAI
 
 from apikeys import openai_api_key, openai_organization
 
-openai.organization = openai_organization
-openai.api_key = openai_api_key
+client = OpenAI(api_key=openai_api_key, organization=openai_organization)
 
-model = "gpt-4"
-# model = "gpt-3.5-turbo"
+model = "gpt-4-turbo-preview"
 
 #
 # OpenAI stuff
@@ -24,13 +23,13 @@ def complete(text, grounding=""):
     while True:
         try:
             return complete_once(text, grounding)
-        except openai.error.RateLimitError:
+        except openai.RateLimitError:
             print("Rate limit reached, waiting for 5 seconds...")
             time.sleep(20)
 
 
 def complete_once(text, grounding=""):
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": grounding},
@@ -50,13 +49,13 @@ def create_image(text, file_name):
     while True:
         try:
             return create_image_once(text, file_name)
-        except openai.error.RateLimitError:
+        except openai.RateLimitError:
             print("Rate limit reached, waiting for 5 seconds...")
             time.sleep(20)
 
 
 def create_image_once(text, file_name):
-    response = openai.Image.create(
+    response = client.images.generate(
         prompt=text, response_format="b64_json", n=1, size="1024x1024"
     )
     img_data = b64decode(response.data[0].b64_json)
