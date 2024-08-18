@@ -1,6 +1,7 @@
 # powerpoint-karaoke-generator/1.0
 # chrifren@ifi.uio.no
 
+import os
 import re
 import sys
 import json
@@ -10,11 +11,12 @@ from unsplash import download_random_image_by_keyword
 import deckmaker
 import threading
 import random
+import uuid
 
 try:
 
     grounding = """
-        You are about to generate a PowerPoint Karaoke presentation. This is a game where you present a slide deck you have never seen before, sort of like improv theater. The slides are meant to be funny, and the goal is to improvise a presentation that is entertaining and engaging. The slides are not meant to be taken seriously. Use a lot of humour, allow yourself to stray off topic, and insert a curveball or two to challenge the speaker. Output text in a random Norwegian dialect and using an informal, spoken language.
+        You are about to generate a PowerPoint Karaoke presentation. This is a game where you present a slide deck you have never seen before, sort of like improv theater. The slides are meant to be funny, and the goal is to improvise a presentation that is entertaining and engaging. The slides are not meant to be taken seriously. Use a lot of humour, allow yourself to stray off topic, and insert a curveball or two to challenge the speaker. Output text in a random Norwegian dialect and using an informal, spoken language. Never output numbering or bullets for lists.
     """
 
     # get prompt from first command line argument
@@ -23,11 +25,12 @@ try:
     print("Generating slides for keyword {}...".format(prompt))
 
     # change the prompt to a filename with .pptx extension
-    filename = re.sub(r"\s+", "_", prompt)
+    filename = sys.argv[2]
+    metadata_filename = sys.argv[3]
 
     # title of the deck
-    prompt = "Create a title consisting of maximum 10 words for a speach about " + prompt
-    title = generator.complete(prompt, grounding)
+    full_prompt = "Create a title consisting of maximum 10 words for a speach about " + prompt
+    title = generator.complete(full_prompt, grounding)
     title = title.strip("\n\t\"")
     print("Title: " + title)
 
@@ -67,8 +70,10 @@ try:
         print("Index:", index)
         print(hook["title"])
         print(hook["keywords"])
-        download_random_image_by_keyword(hook["keywords"].split(", "), str(index) + ".jpg")
-        pictures.append({"title": hook["title"], "content": hook["keywords"].split(", "), "image": str(index) + ".jpg"})
+        image_tmp_filename = f"/tmp/{index}_{uuid.uuid4()}.jpg"
+        print("Downloading image", image_tmp_filename)
+        download_random_image_by_keyword(hook["keywords"].split(", "), image_tmp_filename)
+        pictures.append({"title": hook["title"], "content": hook["keywords"].split(", "), "image": image_tmp_filename})
 
     # Randomly insert the lefthooks into the slides
     for photo in pictures:
@@ -87,7 +92,24 @@ try:
         else:
             deckmaker.createBulletSlide(slide["title"], slide["content"])
 
-    deckmaker.save(filename + ".pptx")
+    deckmaker.save(filename)
+
+    # save metadata
+    metadata = {
+        "prompt": prompt,
+        "title": title,
+        "topics": topics,
+        "pictures": pictures,
+        "created": datetime.datetime.now().isoformat()
+    }
+
+    with open(metadata_filename, "w", encoding="utf-8") as fh:
+        json.dump(metadata, fh)
+
+    # clean up the images
+    for photo in pictures:
+        os.remove(photo["image"])
+
     sys.exit(0)
 
 except Exception as e:

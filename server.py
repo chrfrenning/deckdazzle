@@ -54,7 +54,7 @@ def create_presentation():
     request_id = str(uuid.uuid4())
 
     # start karaoke.py in a subprocess with the keyword and the request id as params
-    subprocess.Popen(["python3", "create.py", "\"{}\"".format(keyword), request_id])
+    subprocess.Popen(["python3", "job.py", "\"{}\"".format(keyword), request_id])
     
     return jsonify({"q": keyword, "url": f"/presentations/{request_id}", "s": "pending"})
 
@@ -74,8 +74,8 @@ def list_presentations():
             p['status'] = "done"
             with open(f".{p['metadata']}.json") as fh:
                 metadata = json.load(fh)
-                p['title'] = metadata["title"]
-                p['q'] = metadata["q"]
+                p['title'] = metadata["prompt"]#metadata["title"]
+                p['q'] = metadata["prompt"]
         else:
             with open(f".{p['metadata']}.pending") as fh:
                 metadata = json.load(fh)

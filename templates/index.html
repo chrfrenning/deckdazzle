@@ -2,17 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DeckDazzle/1.0</title>
+    <title>DeckDazzle - AI PowerPoint Karaoke Generator</title>
     <link rel="stylesheet" href="static/css/style.css">
     <script src="static/js/script.js"></script>
 </head>
 
 <body>
     <img src="static/gfx/logo.jpg" alt="DeckDazzle Logo" id="logo">
-    <h1>DeckDazzle/1.0</h1>
+    <h1>DeckDazzle Beta</h1>
     <script>helloWorld()</script>
 
-    <h2>Create a PowerPoint deck about anything!</h2>
+    <h2>Have fun with PowerPoint Karaoke!</h2>
+    <h3>PowerPoint Karaoke is a type of improv theater - have fun and improve your presentation skills at the same time!</h3>
+    <p>Enter a few keywords below, and our AI will create a 7 slide slide deck with a made up title, some pictures, some bullet points, and a few curveballs.</p>
+    <h3>How to run a PowerPoint Karaoke</h3>
+    <ol>
+        <li>Gather a crowd of friends and colleagues</li>
+        <li>Find or appoint a few volounteers</li>
+        <li>Let each presenter choose a topic</li>
+        <li>Let DeckDazzle create a presentation for that topic</li>
+        <li>The speaker gets 4 minutes to present 7 slides on the topic</li>
+        <li>The challenge is delivering a fun and convincing talk with the unknown slides</li>
+        <li>Have fun, laugh, give big applauses and cheers</li>
+        <li>Tell your friends about DeckDazzle!</li>
+    </ol>
+    <p><strong>Note!</strong> All presentations are saved, at least for some time, so anything you enter will be visible to anyone on the internet. We're monitoring and moderating, but this is an early beta and our time is limited. Please be kind.</p>
+    <h2>Create your own deck!</h2>
+    <p>Enter a few keywords, and we'll create a surprising deck with AI. Your deck will be listed below and ready to download in a few dozen seconds.</p>
+    <p>Currently, decks are created in Norwegian language. We're creating a setting for this very soon.</p>
     <!-- a input text field and a submit button sending content to /create-presentation?q= using POST -->
     <form action="create-presentation" method="post">
         <input type="text" name="presentationName" placeholder="Presentation name">
@@ -37,6 +54,8 @@
             fetch("/create-presentation?q=" + presentationName, options)
                 .then(response => response.json())
                 .then(data => console.log(data));
+            // clear the input field
+            document.querySelector("input").value = "";
         }
     </script>
 
