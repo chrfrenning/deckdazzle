@@ -11,7 +11,7 @@ from apikeys import openai_organization
 openai.organization = openai_organization
 openai.api_key = openai_api_key
 
-model = "gpt-4"
+model = "gpt-4-turbo"
 
 #
 # OpenAI stuff
@@ -19,6 +19,7 @@ model = "gpt-4"
 
 # complete something with openai gpt
 def complete(text, grounding=""):
+    print("Completing for: " + text)
     while True:
         try:
             return complete_once(text, grounding)
