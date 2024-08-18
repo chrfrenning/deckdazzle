@@ -1,0 +1,11 @@
+# Insert your own keys here and rename this file to apikeys.py
+
+
+# openai api key for gpt4
+openai_api_key = ""
+openai_organization = ""
+
+# keys for searching and images on unsplash
+unsplash_appid = ""
+unsplash_secret = ""
+unsplash_key = ""
