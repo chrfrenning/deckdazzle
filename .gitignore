@@ -3,3 +3,4 @@ presentations/
 __pycache__/
 sample_presentation.pptx
 unsplash.jpg
+deploy.sh
